@@ -1,6 +1,8 @@
 # SpaceMission
 Space Mission is a single player game for iOS
 
+<img width="368" alt="startscreen" src="https://cloud.githubusercontent.com/assets/19372110/19192168/a48e9e6e-8ca5-11e6-8d24-e326fdeb611b.png">
+
 ## Gameplay ##
 You can choose between 3 different game modes:
 ### Classic ###
