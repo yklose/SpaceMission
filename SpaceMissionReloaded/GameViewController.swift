@@ -28,8 +28,10 @@ class GameViewController: UIViewController, UIAlertViewDelegate {
         let scene = MainMenueScene(size: CGSize(width: 1536 , height: 2048)) //makes Game universal, one size
         // Configure the view.
         let skView = self.view as! SKView
-        skView.showsFPS = true
-        skView.showsNodeCount = true
+        
+        // Uncommented these two lines to prevent the FPS and Sprite count display (before posting to GitHub)
+        //skView.showsFPS = true
+        //skView.showsNodeCount = true
         
         /* Sprite Kit applies additional optimizations to improve rendering performance */
         skView.ignoresSiblingOrder = true
