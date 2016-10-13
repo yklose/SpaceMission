@@ -15,6 +15,14 @@ class MainMenueScene: SKScene{                          //StartScreen
     
     
     let highScorePic = SKSpriteNode(imageNamed: "highscore")
+    let gameBy = SKLabelNode(fontNamed: "The Bold Font")
+    let gameName1 = SKLabelNode(fontNamed: "The Bold Font")
+    let gameName2 = SKLabelNode(fontNamed: "The Bold Font")
+    let beta = SKLabelNode(fontNamed: "The Bold Font")
+    let optionLabel = SKLabelNode(fontNamed: "The Bold Font")
+    let startGame = SKLabelNode(fontNamed: "The Bold Font")
+    
+    
     
     override func didMove(to view: SKView) {
         
@@ -24,7 +32,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         background.zPosition = 0
         self.addChild(background)
         
-        let gameBy = SKLabelNode(fontNamed: "The Bold Font")
+        
         gameBy.text = "Yannick Klose's"
         gameBy.fontSize = 50
         gameBy.fontColor = SKColor.white
@@ -32,7 +40,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         gameBy.zPosition = 1
         self.addChild(gameBy)
         
-        let gameName1 = SKLabelNode(fontNamed: "The Bold Font")
+        
         gameName1.text = "Space"
         gameName1.fontSize  = 200
         gameName1.fontColor = SKColor.white
@@ -40,7 +48,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         gameName1.zPosition = 1
         self.addChild(gameName1)
         
-        let gameName2 = SKLabelNode(fontNamed: "The Bold Font")
+        
         gameName2.text = "Mission"
         gameName2.fontSize  = 200
         gameName2.fontColor = SKColor.white
@@ -48,7 +56,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         gameName2.zPosition = 1
         self.addChild(gameName2)
         
-        let beta = SKLabelNode(fontNamed: "The Bold Font")
+        
         beta.text = "BETA"
         beta.fontSize  = 70
         beta.fontColor = SKColor.red
@@ -57,7 +65,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         beta.zRotation = 45
         self.addChild(beta)
         
-        let startGame = SKLabelNode(fontNamed: "The Bold Font")
+        
         startGame.text = "Start Game"
         startGame.name = "startButton"
         startGame.fontSize  = 150
@@ -66,7 +74,7 @@ class MainMenueScene: SKScene{                          //StartScreen
         startGame.zPosition = 1
         self.addChild(startGame)
         
-        let optionLabel = SKLabelNode(fontNamed: "The Bold Font")
+        
         optionLabel.text = "Options"
         optionLabel.name = "optionButton"
         optionLabel.fontSize  = 90
@@ -92,6 +100,14 @@ class MainMenueScene: SKScene{                          //StartScreen
         
     }
     
+    func moveToGameScene(){
+    
+        let sceneToMoveTo = GameModeScene(size: self.size)
+        sceneToMoveTo.scaleMode = self.scaleMode
+        let myTransition = SKTransition.fade(withDuration: 0.5)
+        self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+        
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -103,11 +119,30 @@ class MainMenueScene: SKScene{                          //StartScreen
             
             
             if NodeITapped.name == "startButton"{
-            
-                let sceneToMoveTo = GameModeScene(size: self.size)
-                sceneToMoveTo.scaleMode = self.scaleMode
-                let myTransition = SKTransition.fade(withDuration: 0.5)
-                self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+                
+                
+                
+                let prepareGameScene = SKAction.moveBy(x: -1100, y: 0, duration: 0.5)
+                gameBy.run(prepareGameScene)
+                gameName1.run(prepareGameScene)
+                gameName2.run(prepareGameScene)
+                beta.run(prepareGameScene)
+                let prepareGameSceneTwo = SKAction.moveBy(x: 1100, y: 0, duration: 0.5)
+                optionLabel.run(prepareGameSceneTwo)
+                highScorePic.run(prepareGameSceneTwo)
+                let zoomStartButton = SKAction.scale(to: 0.1, duration: 0.5)
+                startGame.run(zoomStartButton)
+                
+                
+                
+                
+                
+                let wait = SKAction.wait(forDuration: 0.5)
+                let moveToScene = SKAction.run {
+                    self.moveToGameScene()
+                }
+                let sequence = SKAction.sequence([wait,moveToScene])
+                self.run(sequence)
                 
             }
             
@@ -116,7 +151,7 @@ class MainMenueScene: SKScene{                          //StartScreen
                 
                 let sceneToMoveTo = PauseMenueScene(size: self.size)
                 sceneToMoveTo.scaleMode = self.scaleMode
-                let myTransition = SKTransition.fade(withDuration: 0.5)
+                let myTransition = SKTransition.flipVertical(withDuration: 0.5)
                 self.view!.presentScene(sceneToMoveTo, transition: myTransition)
         
         }

@@ -10,26 +10,46 @@ import Foundation
 import SpriteKit
 
 
+
 let defaults = UserDefaults()
 var selectedControlMode = defaults.integer(forKey: "controlModeSaved")
 var selectedLevelMode = defaults.integer(forKey: "levelModeSaved")
+var selectedTimeInterval = defaults.double(forKey: "AMeterTimeIntervalSaved")
+var selectedAMeterVar = defaults.integer(forKey: "AMeterVarSaved")
 
 class PauseMenueScene: SKScene{
     
-    let controlSelection = SKLabelNode(fontNamed: "The Bold Font")
+    //---------------- LabelNodes -> Button
     
-    let levelSelection = SKLabelNode(fontNamed: "The Bold Font")
+    let controlSelection = SKLabelNode(fontNamed: "The Bold Font")          //select Touch (1) or AMeter (0)
+    
+    let levelSelection = SKLabelNode(fontNamed: "The Bold Font")            //select Easy Medium or Hard
+    
+    let timeIntervalLabel = SKLabelNode(fontNamed: "The Bold Font")         //select intensity of AMeter-Sensor
+    
+    let resetHighscore = SKLabelNode(fontNamed: "The Bold Font")            //reset the highscores (all)
+    
+    //----------------- PlaceHolder
     
     var controlSelectionMode: String = ""
     
     var levelSelectionMode: String = ""
     
-    let resetHighscore = SKLabelNode(fontNamed: "The Bold Font")
+    var timeInterval: String = ""
     
+    var durationInterval: TimeInterval = 0.3
+    
+    //------------------ Other
+    
+    let accuracy = SKLabelNode(fontNamed: "The Bold Font")
+    
+    let level = SKLabelNode(fontNamed: "The Bold Font")
     
     
     override func didMove(to view: SKView) {
         
+        
+        //-------------------------------- difficulty Level
         
         if selectedLevelMode == 0{
             levelSelectionMode = "easy"
@@ -42,6 +62,8 @@ class PauseMenueScene: SKScene{
         }
         
         
+        //-------------------------------- Control Mode Selection
+        
         if selectedControlMode == 1{
             controlSelectionMode = "touch"
         }
@@ -50,6 +72,42 @@ class PauseMenueScene: SKScene{
             controlSelectionMode = "A-Meter"
         }
         
+        
+        
+        
+        //-------------------------------- Accuracy for Accelerationmeter
+        
+       
+        print(selectedTimeInterval)
+        
+        if selectedTimeInterval == 0.3{
+            timeInterval = "normal"
+            selectedAMeterVar = 900
+            
+        }
+        if selectedTimeInterval == 0.4{
+            timeInterval = "slow"
+            selectedAMeterVar = 800
+            
+        }
+        if selectedTimeInterval == 0.2{
+            timeInterval = "fast"
+            selectedAMeterVar = 1050
+            
+        }
+        
+        if selectedTimeInterval == 0.0 { //for first use
+            timeInterval = "normal"
+            durationInterval = 0.3
+            defaults.set(durationInterval, forKey: "AMeterTimeIntervalSaved")
+            selectedAMeterVar = 900
+            defaults.set(selectedAMeterVar, forKey: "AMeterVarSaved")
+        }
+        
+        print(timeInterval)
+        print(selectedTimeInterval)
+        
+        //-------------------------------- fixed Label
         
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
@@ -87,6 +145,33 @@ class PauseMenueScene: SKScene{
         self.addChild(control)
         
         
+        
+        
+            accuracy.text = "Accuracy:"
+            accuracy.fontSize  = 90
+            accuracy.fontColor = SKColor.white
+            accuracy.position = CGPoint(x: self.size.width*0.35, y: self.size.height*0.4)
+            accuracy.zPosition = 5
+            accuracy.alpha = 0
+            self.addChild(accuracy)
+        
+        
+        
+        level.text = "Level:"
+        level.name = "level"
+        level.fontSize  = 90
+        level.fontColor = SKColor.white
+        if selectedControlMode == 0{
+            level.position = CGPoint(x: self.size.width*0.35, y: self.size.height*0.3)
+        }
+        else{
+            level.position = CGPoint(x: self.size.width*0.35, y: self.size.height*0.4)
+        }
+        level.zPosition = 5
+        self.addChild(level)
+        
+        //-------------------------------- changing Label
+        
         controlSelection.text = controlSelectionMode
         controlSelection.name = "controlSelection"
         controlSelection.fontSize  = 70
@@ -96,21 +181,34 @@ class PauseMenueScene: SKScene{
         self.addChild(controlSelection)
         
         
-        let level = SKLabelNode(fontNamed: "The Bold Font")
-        level.text = "Level:"
-        level.name = "level"
-        level.fontSize  = 90
-        level.fontColor = SKColor.white
-        level.position = CGPoint(x: self.size.width*0.35, y: self.size.height*0.4)
-        level.zPosition = 5
-        self.addChild(level)
+        
+            timeIntervalLabel.text = timeInterval
+            timeIntervalLabel.name = "timeIntervalSelectionNone"
+            timeIntervalLabel.fontSize  = 70
+            timeIntervalLabel.fontColor = SKColor.white
+            timeIntervalLabel.position = CGPoint(x: self.size.width*0.66, y: self.size.height*0.4)
+            timeIntervalLabel.zPosition = 5
+            timeIntervalLabel.alpha = 0
+            self.addChild(timeIntervalLabel)
+        
+        if selectedControlMode == 0{
+            timeIntervalLabel.name = "timeIntervalSelection"
+            timeIntervalLabel.alpha = 1
+            accuracy.alpha = 1
+            
+        }
         
         
         levelSelection.text = levelSelectionMode
         levelSelection.name = "levelSelection"
         levelSelection.fontSize  = 70
         levelSelection.fontColor = SKColor.white
-        levelSelection.position = CGPoint(x: self.size.width*0.66, y: self.size.height*0.4)
+        if selectedControlMode == 0{
+            levelSelection.position = CGPoint(x: self.size.width*0.66, y: self.size.height*0.3)
+        }
+        else{
+            levelSelection.position = CGPoint(x: self.size.width*0.66, y: self.size.height*0.4)
+        }
         levelSelection.zPosition = 5
         self.addChild(levelSelection)
         
@@ -135,15 +233,16 @@ class PauseMenueScene: SKScene{
             let pointOfTouch = touch.location(in: self)
             let NodeITapped = atPoint(pointOfTouch)
             
+            //add here new "Buttons" (Label touched)
+            
             if NodeITapped.name == "back"{
                 
                 let sceneToMoveTo = MainMenueScene(size: self.size)
                 sceneToMoveTo.scaleMode = self.scaleMode
-                let myTransition = SKTransition.fade(withDuration: 0.5)
+                let myTransition = SKTransition.flipVertical(withDuration: 0.5)
                 self.view!.presentScene(sceneToMoveTo, transition: myTransition)
-                
-                
             }
+            
             
             if NodeITapped.name == "controlSelection"{
                 
@@ -157,6 +256,20 @@ class PauseMenueScene: SKScene{
                     controlSelectionMode = "A-Meter"
                     doubleCheck = 1
                     
+                    let moveToYX = SKAction.moveTo(y: self.size.height*0.3, duration: 0.3)
+                    level.run(moveToYX)
+                    levelSelection.run(moveToYX)
+                    
+                    timeIntervalLabel.name = "timeIntervalSelection"
+                    
+                    let action  = SKAction.fadeAlpha(to: 1, duration: 0.3)
+                    timeIntervalLabel.run(action)
+                    accuracy.run(action)
+                    
+                    
+                    
+                    
+                    
                 }
                 
                 if controlSelectionMode == "A-Meter" && doubleCheck == 0{
@@ -167,6 +280,21 @@ class PauseMenueScene: SKScene{
                     
                     controlSelectionMode = "touch"
                     doubleCheck = 1
+                    
+                    let moveToY = SKAction.moveTo(y: self.size.height*0.4, duration: 0.3)
+                    level.run(moveToY)
+                    levelSelection.run(moveToY)
+                    
+                    
+                    timeIntervalLabel.name = "timeIntervalSelectionNone"
+                    
+                    let action  = SKAction.fadeAlpha(to: 0, duration: 0.6)
+                    timeIntervalLabel.run(action)
+                    accuracy.run(action)
+                    
+                    
+                    
+                    
                     
                 }
                 
@@ -232,6 +360,56 @@ class PauseMenueScene: SKScene{
                 highScoreNumberClassic = 0
                 highScoreNumberTimeMode = 0
                 highScoreNumberSingelShot = 0
+                
+            }
+            
+            if NodeITapped.name == "timeIntervalSelection"{
+                
+                var doubleCheck = 0
+                
+                if timeInterval == "slow" && doubleCheck == 0{
+                    
+                    selectedTimeInterval = 0.3
+                    defaults.set(selectedTimeInterval, forKey: "AMeterTimeIntervalSaved")
+                    selectedAMeterVar = 900
+                    defaults.set(selectedAMeterVar, forKey: "AMeterVarSaved")
+                    
+                    timeInterval = "normal"
+                    doubleCheck = 1
+                    
+                    
+                }
+                
+                if timeInterval == "normal" && doubleCheck == 0{
+                    
+                    
+                    selectedTimeInterval = 0.2
+                    defaults.set(selectedTimeInterval, forKey: "AMeterTimeIntervalSaved")
+                    selectedAMeterVar = 1200
+                    defaults.set(selectedAMeterVar, forKey: "AMeterVarSaved")
+                    
+                    timeInterval = "fast"
+                    doubleCheck = 1
+                    
+                    
+                    
+                }
+                if timeInterval == "fast" && doubleCheck == 0{
+                    
+                    
+                    selectedTimeInterval = 0.4
+                    defaults.set(selectedTimeInterval, forKey: "AMeterTimeIntervalSaved")
+                    selectedAMeterVar = 600
+                    defaults.set(selectedAMeterVar, forKey: "AMeterVarSaved")
+                    
+                    timeInterval = "slow"
+                    doubleCheck = 1
+                    
+                   
+                    
+                }
+                
+                timeIntervalLabel.text = timeInterval
                 
             }
             

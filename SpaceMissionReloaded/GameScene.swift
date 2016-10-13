@@ -67,6 +67,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let menueLabel = SKLabelNode(fontNamed: "The Bold Font")
     
+    var gameTimer: Timer!
+    
+    var remainingTimeInteger = 10
+    
     
     
     enum gameState{
@@ -162,11 +166,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(player)
         
         
-        protectionPlayer.name = "ProtectionPlayer"
+        protectionPlayer.name = "ProtectionPlayer"          //ProtectionBubble
         protectionPlayer.setScale(0.55)
         protectionPlayer.position = player.position
         protectionPlayer.zPosition = 2
-        protectionPlayer.alpha = 0
+        protectionPlayer.alpha = 0                          //is always active -> can't see it
         protectionPlayer.constraints = [SKConstraint.positionX(SKRange(lowerLimit: gameArea.minX + player.size.width/2, upperLimit: gameArea.maxX - player.size.width/2))]
         self.addChild(protectionPlayer)
         
@@ -202,10 +206,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.addChild(livesLabel)
         }
         
-        if gameModeChoice == 2 {
+        if gameModeChoice == 2 {                    //only for TIME MODE
             
             remainingTimeForTimeMode.text = "10"
-            remainingTimeForTimeMode.fontSize = 70
+            remainingTimeForTimeMode.fontSize = 90
             remainingTimeForTimeMode.fontColor = SKColor.white
             remainingTimeForTimeMode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
             remainingTimeForTimeMode.position = CGPoint(x: self.size.width*0.85, y: self.size.height + livesLabel.frame.size.height)
@@ -234,7 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let fadeInAction = SKAction.fadeIn(withDuration: 0.3)
         tapToStartLabel.run(fadeInAction)
         
-        //------------- For Time Mode Only
+        
         
         
         
@@ -258,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 
                 
-                let action = SKAction.moveTo(x: (self.player.position.x + (CGFloat(data.acceleration.x)*900)), duration: 0.3)
+                let action = SKAction.moveTo(x: (self.player.position.x + (CGFloat(data.acceleration.x)*CGFloat(selectedAMeterVar))), duration: selectedTimeInterval)
                 
                 if self.currentGameState == gameState.inGame{
                     
@@ -334,25 +338,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let startGameSequence = SKAction.sequence([moveShipOntoScreenAction,startLevelAction])
         player.run(startGameSequence)
         
-        if gameModeChoice == 2 {
+        if gameModeChoice == 2 {                                    //Timer Funktion
             
-            var count = 10
+            gameTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(runTimeCode), userInfo: nil, repeats: true)
             
-            
-            
-            for _ in 0...10{
-                
-                //NS Timer....
-                count = count - 1
-                
-                remainingTimeForTimeMode.text = "\(count)"
-                print(count)
-                
-            }
         }
         
         
     }
+    
+
+    func runTimeCode(){
+        
+        if remainingTimeInteger >= 0{
+    
+            remainingTimeForTimeMode.text = String(remainingTimeInteger)
+            remainingTimeInteger = remainingTimeInteger - 1
+        
+        }
+        
+        else{
+            gameTimer.invalidate()
+            runGameOver()
+        }
+    }
+        
     
     
     func loseALife(){
@@ -659,9 +669,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let deleteEnemy = SKAction.removeFromParent()
         let loseALifeAction = SKAction.run(loseALife)
         let enemySequence = SKAction.sequence([moveEnemy,deleteEnemy, loseALifeAction])
+        let enemySequenceTimeMode = SKAction.sequence([moveEnemy,deleteEnemy])
         
-        if currentGameState == gameState.inGame{
+        
+        
+        if currentGameState == gameState.inGame && gameModeChoice != 2{
             enemy.run(enemySequence)
+        }
+        if currentGameState == gameState.inGame && gameModeChoice == 2{
+            enemy.run(enemySequenceTimeMode)
         }
         
         
