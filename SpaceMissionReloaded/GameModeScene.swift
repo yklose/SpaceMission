@@ -11,7 +11,7 @@ import CoreMotion
 import SpriteKit
 
 
-var gameModeChoice = 0      //default, Classic = 1, TimeMode = 2, Single Shot = 3
+var gameModeChoice = 0                  //default, Classic = 1, TimeMode = 2, Single Shot = 3
 var selectedGameModeChoise = defaults.integer(forKey: "gameModeChoiseSaved")
 
 class GameModeScene: SKScene {          //Level Selectionmode

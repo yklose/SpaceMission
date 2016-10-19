@@ -22,15 +22,37 @@ class MainMenueScene: SKScene{                          //StartScreen
     let optionLabel = SKLabelNode(fontNamed: "The Bold Font")
     let startGame = SKLabelNode(fontNamed: "The Bold Font")
     
+    //---------------------for scrolling background
+    
+    var lastUpdateTime: TimeInterval = 0
+    var deltaFrameTime: TimeInterval = 0
+    var amountToMovePerSecound: CGFloat = 40.0          //very slow
+    
+    
+    
     
     
     override func didMove(to view: SKView) {
         
+ 
+        for i in 0...1{                                     //Scrolling Background
+            
+            let background = SKSpriteNode(imageNamed: "background")
+            background.size = self.size
+            background.name = "Background"
+            background.anchorPoint = CGPoint(x: 0.5, y: 0)
+            background.position = CGPoint(x: self.size.width/2,
+                                          y: self.size.height*CGFloat(i))
+            background.zPosition = 0
+            background.alpha = 0
+            self.addChild(background)
+            let fadeInBackground = SKAction.fadeAlpha(to: 1, duration: 0.4) //still a grey screen before start up
+            background.run(fadeInBackground)
+            
+            
+            
+        }
         
-        let background = SKSpriteNode(imageNamed: "background")
-        background.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
-        background.zPosition = 0
-        self.addChild(background)
         
         
         gameBy.text = "Yannick Klose's"
@@ -171,6 +193,35 @@ class MainMenueScene: SKScene{                          //StartScreen
 
     }
 
+    override func update(_ currentTime: TimeInterval) {
+        
+        if lastUpdateTime == 0{
+            lastUpdateTime = currentTime
+        }
+        else{
+            deltaFrameTime = currentTime - lastUpdateTime
+            lastUpdateTime = currentTime
+        }
+        
+        let amountToMoveBackground = (amountToMovePerSecound )*CGFloat(deltaFrameTime) //adjust the speed of the scolling background [+ (vmaxEnemy*5 - 2.6*5)]
+        
+        
+        
+        self.enumerateChildNodes(withName: "Background"){
+            background, stop in
+            
+            
+            background.position.y -= amountToMoveBackground
+            
+            if background.position.y < -self.size.height{
+                background.position.y += self.size.height*2
+            }
+            
+        }
+        
+        
+    }
+    
 
 
 

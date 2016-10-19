@@ -69,7 +69,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameTimer: Timer!
     
-    var remainingTimeInteger = 10
+    var remainingTimeInteger = 20
+    
+    var timerSpawn = 0
+    
+    var timeBonus = 0                               //Bonus Seconds in Time Mode
     
     
     
@@ -91,6 +95,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         static let Bullet : UInt32 = 0b10           //2
         static let Enemy : UInt32 = 0b100           //4
         static let Protection: UInt32 = 0b101       //5
+        static let TimeIcon : UInt32 = 0b111        //6
+        static let MinusTimeIcon : UInt32 = 0b1000  //7
         
     }
     
@@ -208,7 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if gameModeChoice == 2 {                    //only for TIME MODE
             
-            remainingTimeForTimeMode.text = "10"
+            remainingTimeForTimeMode.text = "20"
             remainingTimeForTimeMode.fontSize = 90
             remainingTimeForTimeMode.fontColor = SKColor.white
             remainingTimeForTimeMode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
@@ -350,10 +356,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func runTimeCode(){
         
+        timerSpawn = timerSpawn + 1
+        
         if remainingTimeInteger >= 0{
     
             remainingTimeForTimeMode.text = String(remainingTimeInteger)
             remainingTimeInteger = remainingTimeInteger - 1
+            
+            if timerSpawn > 6{
+                
+                spawnTime()
+                timerSpawn = 0
+                
+            }
+            
+            if timerSpawn == 5{
+                spawnMinusTime()
+            
+            }
         
         }
         
@@ -453,6 +473,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             protection, stop in
             protection.removeAllActions()
             
+        }
+        
+        self.enumerateChildNodes(withName: "timerIcon"){
+            timeIcon, stop in
+            timeIcon.removeAllActions()
             
         }
         
@@ -567,18 +592,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let protectionSequence = SKAction.sequence([protectionTime,fadeSequence,deleteProtectionLabel,protectionOff])
             timeLeft.run(protectionSequence)
             
-            
-            
-            
-            
-            
             body2.node?.removeFromParent() //Protection
-            
-            
-            
-            
-            
-            
             
             let startProtection = SKAction.fadeAlpha(to: 1, duration: 0.1)
             let waitBeforeProtectionOff = SKAction.wait(forDuration: 5)
@@ -591,13 +605,124 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             protectionPlayer.run(deleteCoverSequence)
             
+        }
+        
+        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.TimeIcon {
+        
+            let randomBonusTime = random(min: 5, max: 15)
             
+            remainingTimeInteger = remainingTimeInteger + Int(round(randomBonusTime))
+            
+            print(randomBonusTime)
+            print(round(randomBonusTime))
+            
+            
+            let extraBonus = SKLabelNode(fontNamed: "The Bold Font")
+            extraBonus.text = "+ \(String(describing: round(randomBonusTime)))"
+            extraBonus.fontSize = 90
+            extraBonus.fontColor = SKColor.yellow
+            extraBonus.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
+            extraBonus.position = CGPoint(x: self.size.width*0.85, y: self.size.height*0.85 )
+            extraBonus.zPosition = 100
+            self.addChild(extraBonus)
+            
+            let fadeInAction = SKAction.fadeIn(withDuration: 0.2)
+            let wait = SKAction.wait(forDuration: 0.8)
+            let moveOverLabel = SKAction.moveTo(y: remainingTimeForTimeMode.position.y, duration: 0.2)
+            let fadeOutAction = SKAction.fadeOut(withDuration: 0.2)
+            let delete = SKAction.removeFromParent()
+            let sequence = SKAction.sequence([fadeInAction,wait,moveOverLabel,fadeOutAction,delete])
+            
+            extraBonus.run(sequence)
+            
+            let waitUp = SKAction.wait(forDuration: 1.2)
+            let performAction = SKAction.run {
+                self.remainingTimeForTimeMode.text = String(self.remainingTimeInteger)
+            }
+            let scaleUp = SKAction.scale(to: 1.5, duration: 0.2)
+            let scaleDown   = SKAction.scale(to: 1, duration: 0.2)
+            let remainingTimeSequence = SKAction.sequence([waitUp,performAction,scaleUp,scaleDown])
+            remainingTimeForTimeMode.run(remainingTimeSequence)
+            
+            body2.node?.removeFromParent() //TimeIcon
+            
+        
+        
+        
+        }
+        
+        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.MinusTimeIcon {
+            
+            let randomBonusTime = random(min: 10, max: 5)
+            
+            remainingTimeInteger = remainingTimeInteger - Int(round(randomBonusTime))
+            
+            print(randomBonusTime)
+            print(round(randomBonusTime))
+            
+            
+            let extraBonus = SKLabelNode(fontNamed: "The Bold Font")
+            extraBonus.text = "- \(String(describing: round(randomBonusTime)))"
+            extraBonus.fontSize = 90
+            extraBonus.fontColor = SKColor.red
+            extraBonus.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
+            extraBonus.position = CGPoint(x: self.size.width*0.85, y: self.size.height*0.85 )
+            extraBonus.zPosition = 100
+            self.addChild(extraBonus)
+            
+            let fadeInAction = SKAction.fadeIn(withDuration: 0.2)
+            let wait = SKAction.wait(forDuration: 0.8)
+            let moveOverLabel = SKAction.moveTo(y: remainingTimeForTimeMode.position.y, duration: 0.2)
+            let fadeOutAction = SKAction.fadeOut(withDuration: 0.2)
+            let delete = SKAction.removeFromParent()
+            let sequence = SKAction.sequence([fadeInAction,wait,moveOverLabel,fadeOutAction,delete])
+            
+            extraBonus.run(sequence)
+            
+            let waitUp = SKAction.wait(forDuration: 1.2)
+            let performAction = SKAction.run {
+                self.remainingTimeForTimeMode.text = String(self.remainingTimeInteger)
+            }
+            let scaleUp = SKAction.scale(to: 1.5, duration: 0.2)
+            let scaleDown   = SKAction.scale(to: 1, duration: 0.2)
+            let remainingTimeSequence = SKAction.sequence([waitUp,performAction,scaleUp,scaleDown])
+            remainingTimeForTimeMode.run(remainingTimeSequence)
+            
+            
+            body2.node?.removeFromParent() //TimeIcon
             
             
             
             
         }
         
+        if body1.categoryBitMask == PhysicsCategories.Bullet && body2.categoryBitMask == PhysicsCategories.TimeIcon && body2.node?.position.y < self.size.height { //if bullet hits timeIcons
+        
+            /*
+            let scaleDown = SKAction.scale(to: 0, duration: 0.2)
+            let action = SKAction.fadeOut(withDuration: 0.2)
+            let delete = SKAction.removeFromParent()
+            let sequence = SKAction.sequence([scaleDown,action,delete])
+            */
+            
+            body2.node?.removeFromParent() //TimeIcon
+            
+            
+        }
+        
+        if body1.categoryBitMask == PhysicsCategories.Bullet && body2.categoryBitMask == PhysicsCategories.MinusTimeIcon && body2.node?.position.y < self.size.height { //if bullet hits timeIcons
+            
+            /*
+             let scaleDown = SKAction.scale(to: 0, duration: 0.2)
+             let action = SKAction.fadeOut(withDuration: 0.2)
+             let delete = SKAction.removeFromParent()
+             let sequence = SKAction.sequence([scaleDown,action,delete])
+             */
+            
+            body2.node?.removeFromParent() //TimeIcon
+            
+            
+        }
     }
     
     func spawnExplosion(_ spawnPosition: CGPoint){
@@ -644,6 +769,72 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func spawnTime(){
+        
+        let randomXStart = random(min: gameArea.minX, max: gameArea.maxX)
+        let randomXEnd = random(min: gameArea.minX, max: gameArea.maxX)
+        
+        let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
+        let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
+        
+        let timeIcon = SKSpriteNode(imageNamed: "explosion")
+        
+        timeIcon.name = "timerIcon"
+        timeIcon.setScale(0.6)
+        timeIcon.position = startPoint
+        timeIcon.zPosition = 2
+        timeIcon.physicsBody = SKPhysicsBody(rectangleOf: timeIcon.size)
+        timeIcon.physicsBody!.affectedByGravity = false
+        timeIcon.physicsBody!.categoryBitMask = PhysicsCategories.TimeIcon
+        timeIcon.physicsBody!.collisionBitMask = PhysicsCategories.None
+        timeIcon.physicsBody!.contactTestBitMask = PhysicsCategories.Player | PhysicsCategories.Bullet
+        self.addChild(timeIcon)
+        
+        let moveIcon = SKAction.move(to: endPoint, duration: TimeInterval(vmaxEnemy))
+        let deleteIcon = SKAction.removeFromParent()
+        let iconSequence = SKAction.sequence([moveIcon,deleteIcon])
+        
+        
+        
+        
+        timeIcon.run(iconSequence)
+        
+        
+    }
+    
+    func spawnMinusTime(){
+        
+        let randomXStart = random(min: gameArea.minX, max: gameArea.maxX)
+        let randomXEnd = random(min: gameArea.minX, max: gameArea.maxX)
+        
+        let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
+        let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
+        
+        let timeIcon = SKSpriteNode(imageNamed: "explosionRed")
+        
+        timeIcon.name = "timerIcon"
+        timeIcon.setScale(0.6)
+        timeIcon.position = startPoint
+        timeIcon.zPosition = 2
+        timeIcon.physicsBody = SKPhysicsBody(rectangleOf: timeIcon.size)
+        timeIcon.physicsBody!.affectedByGravity = false
+        timeIcon.physicsBody!.categoryBitMask = PhysicsCategories.MinusTimeIcon
+        timeIcon.physicsBody!.collisionBitMask = PhysicsCategories.None
+        timeIcon.physicsBody!.contactTestBitMask = PhysicsCategories.Player | PhysicsCategories.Bullet
+        self.addChild(timeIcon)
+        
+        let moveIcon = SKAction.move(to: endPoint, duration: TimeInterval(vmaxEnemy))
+        let deleteIcon = SKAction.removeFromParent()
+        let iconSequence = SKAction.sequence([moveIcon,deleteIcon])
+        
+        
+        
+        
+        timeIcon.run(iconSequence)
+        
+        
+    }
+    
     func spawnEnemy(){
         
         let randomXStart = random(min: gameArea.minX, max: gameArea.maxX)
@@ -676,7 +867,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if currentGameState == gameState.inGame && gameModeChoice != 2{
             enemy.run(enemySequence)
         }
-        if currentGameState == gameState.inGame && gameModeChoice == 2{
+        if currentGameState == gameState.inGame && gameModeChoice == 2{         //you don't lose a life
             enemy.run(enemySequenceTimeMode)
         }
         
