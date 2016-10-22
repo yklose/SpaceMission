@@ -32,6 +32,7 @@ class GameViewController: UIViewController, UIAlertViewDelegate {
         // Uncommented these two lines to prevent the FPS and Sprite count display (before posting to GitHub)
         //skView.showsFPS = true
         //skView.showsNodeCount = true
+        //skView.showsPhysics = true
         
         /* Sprite Kit applies additional optimizations to improve rendering performance */
         skView.ignoresSiblingOrder = true
