@@ -163,7 +163,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.setScale(0.16)
         player.position = CGPoint(x: self.size.width/2, y: 0 - player.size.height)
         player.zPosition = 2
-        player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
+        // Making a path matching the outline of the spaceship to refine physicsBody contact
+        let path = CGMutablePath()
+        path.addLines(between: [CGPoint(x: -50, y: 50), CGPoint(x: 0, y: 130), CGPoint(x: 50, y: 50), CGPoint(x: 50, y: -50),
+                                CGPoint(x: -50, y: -50), CGPoint(x: -50, y: 50)])
+        path.closeSubpath()
+        player.physicsBody = SKPhysicsBody(polygonFrom: path)
         player.physicsBody!.affectedByGravity = false
         player.physicsBody!.categoryBitMask = PhysicsCategories.Player
         player.physicsBody!.collisionBitMask = PhysicsCategories.None
@@ -566,7 +571,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         
-        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.Protection {
+        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.Protection { // if player hits protection
             
             protection = 1
             
@@ -607,7 +612,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         
-        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.TimeIcon {
+        if body1.categoryBitMask == PhysicsCategories.Player && body2.categoryBitMask == PhysicsCategories.TimeIcon { // Player hits time icon
         
             let randomBonusTime = random(min: 5, max: 15)
             
@@ -849,7 +854,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.setScale(0.6)
         enemy.position = startPoint
         enemy.zPosition = 2
-        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+        // Create a path to match the outline of the enemy ship for more precise physics contact
+        let path = CGMutablePath()
+        path.addLines(between: [CGPoint(x: -50, y: 75), CGPoint(x: 50, y: 75), CGPoint(x: 180, y: 0), CGPoint(x: 100, y: -75),
+                                CGPoint(x: -50, y: -75), CGPoint(x: -50, y: 75)])
+        path.closeSubpath()
+        enemy.physicsBody = SKPhysicsBody(polygonFrom: path)
         enemy.physicsBody!.affectedByGravity = false
         enemy.physicsBody!.categoryBitMask = PhysicsCategories.Enemy
         enemy.physicsBody!.collisionBitMask = PhysicsCategories.None
@@ -896,7 +906,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         protectionItem.setScale(0.3)
         protectionItem.position = startPoint
         protectionItem.zPosition = 2
-        protectionItem.physicsBody = SKPhysicsBody(rectangleOf: protectionItem.size)
+        protectionItem.physicsBody = SKPhysicsBody(circleOfRadius: protectionItem.size.width)
         protectionItem.physicsBody!.affectedByGravity = false
         protectionItem.physicsBody!.categoryBitMask = PhysicsCategories.Protection
         protectionItem.physicsBody!.collisionBitMask = PhysicsCategories.None
