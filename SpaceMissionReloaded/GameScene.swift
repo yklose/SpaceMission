@@ -782,10 +782,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
         
-        let timeIcon = SKSpriteNode(imageNamed: "explosion")
+        let timeIcon = SKSpriteNode(imageNamed: "zeitPlus")
         
         timeIcon.name = "timerIcon"
-        timeIcon.setScale(0.6)
+        timeIcon.setScale(0.4)
         timeIcon.position = startPoint
         timeIcon.zPosition = 2
         timeIcon.physicsBody = SKPhysicsBody(rectangleOf: timeIcon.size)
@@ -815,10 +815,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
         
-        let timeIcon = SKSpriteNode(imageNamed: "explosionRed")
+        let timeIcon = SKSpriteNode(imageNamed: "zeitMinus")
         
         timeIcon.name = "timerIcon"
-        timeIcon.setScale(0.6)
+        timeIcon.setScale(0.4)
         timeIcon.position = startPoint
         timeIcon.zPosition = 2
         timeIcon.physicsBody = SKPhysicsBody(rectangleOf: timeIcon.size)

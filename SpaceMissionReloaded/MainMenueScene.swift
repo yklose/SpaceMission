@@ -34,6 +34,14 @@ class MainMenueScene: SKScene{                          //StartScreen
     
     override func didMove(to view: SKView) {
         
+        //----------- scrolling Background --START
+        
+        let backgroundBlack = SKSpriteNode(imageNamed: "black")
+        backgroundBlack.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+        backgroundBlack.zPosition = -1
+        backgroundBlack.size = self.size
+        self.addChild(backgroundBlack)
+
  
         for i in 0...1{                                     //Scrolling Background
             
@@ -46,14 +54,19 @@ class MainMenueScene: SKScene{                          //StartScreen
             background.zPosition = 0
             background.alpha = 0
             self.addChild(background)
-            let fadeInBackground = SKAction.fadeAlpha(to: 1, duration: 0.4) //still a grey screen before start up
+            let fadeInBackground = SKAction.fadeAlpha(to: 1, duration: 0.2) 
             background.run(fadeInBackground)
             
             
             
         }
         
+        let wait = SKAction.wait(forDuration: 0.4)
+        let delete = SKAction.removeFromParent()
+        let sequence = SKAction.sequence([wait,delete])
+        backgroundBlack.run(sequence)
         
+        //------------ scrolling Background --END
         
         gameBy.text = "Yannick Klose's"
         gameBy.fontSize = 50
@@ -144,16 +157,16 @@ class MainMenueScene: SKScene{                          //StartScreen
                 
                 
                 
-                let prepareGameScene = SKAction.moveBy(x: -1100, y: 0, duration: 0.5)
+                let prepareGameScene = SKAction.moveBy(x: 0, y: 1000, duration: 0.5)
                 gameBy.run(prepareGameScene)
                 gameName1.run(prepareGameScene)
                 gameName2.run(prepareGameScene)
                 beta.run(prepareGameScene)
-                let prepareGameSceneTwo = SKAction.moveBy(x: 1100, y: 0, duration: 0.5)
+                let prepareGameSceneTwo = SKAction.moveBy(x: 0, y: -1000, duration: 0.5)
                 optionLabel.run(prepareGameSceneTwo)
                 highScorePic.run(prepareGameSceneTwo)
-                let zoomStartButton = SKAction.scale(to: 0.1, duration: 0.5)
-                startGame.run(zoomStartButton)
+                let fadeOutStartButton = SKAction.fadeOut(withDuration: 0.5)
+                startGame.run(fadeOutStartButton)
                 
                 
                 
@@ -187,6 +200,21 @@ class MainMenueScene: SKScene{                          //StartScreen
                 self.view?.presentScene(sceneToMoveTo, transition: myTransition)
                 
                 
+            }
+            
+            if gameName1.contains(pointOfTouch){
+                
+                let sceneToMoveTo = SpecialThanksCreditsScene(size: self.size)
+                sceneToMoveTo.scaleMode = self.scaleMode
+                let myTransition = SKTransition.fade(withDuration: 0.5)
+                self.view?.presentScene(sceneToMoveTo, transition: myTransition)
+            }
+            if gameName2.contains(pointOfTouch){
+                
+                let sceneToMoveTo = SpecialThanksCreditsScene(size: self.size)
+                sceneToMoveTo.scaleMode = self.scaleMode
+                let myTransition = SKTransition.fade(withDuration: 0.5)
+                self.view?.presentScene(sceneToMoveTo, transition: myTransition)
             }
             
     }

@@ -30,10 +30,41 @@ class SpecialThanksCreditsScene: SKScene {              //Not finished yet
         
         //add here some Special Thanks
         
+        let instructions = "-- SPECIAL THANKS --\n\n I really want to thank \nsome people, who made \nthis game possible! \n\nFirst of there is my \nbrother LOUIS KLOSE, who \nmade this insane grafic! \n\nBut then there is also my \nuncle RALF TAPPMEYER, who \nhelped me whenever I \nneeded him.\n\n Thank you! \n"
+        let instructionMessage = SKLabelNode(fontNamed: "The Bold Font")
+        instructionMessage.fontSize = 70
+        //instructionMessage.horizontalAlignmentMode = .left
+        //instructionMessage.verticalAlignmentMode = .top
+        instructionMessage.fontColor = UIColor.white
+        instructionMessage.text = instructions
+        let message = instructionMessage.multilined()
+        message.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.5)
+        message.zPosition = 1001
+        self.addChild(message)
+        
         //test test 
         
         
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        
+        for touch: AnyObject in touches{
+            
+            let pointOfTouch = touch.location(in: self)
+            let NodeITapped = atPoint(pointOfTouch)
+            
+            if NodeITapped.name == "back"{
+                
+                let sceneToMoveTo = MainMenueScene(size: self.size)
+                sceneToMoveTo.scaleMode = self.scaleMode
+                let myTransition = SKTransition.fade(withDuration: 0.5)
+                self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+                
+                
+            }
+        }}
     
     
 }

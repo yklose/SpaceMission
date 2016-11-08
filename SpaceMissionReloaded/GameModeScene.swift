@@ -14,6 +14,7 @@ import SpriteKit
 var gameModeChoice = 0                  //default, Classic = 1, TimeMode = 2, Single Shot = 3
 var selectedGameModeChoise = defaults.integer(forKey: "gameModeChoiseSaved")
 
+
 class GameModeScene: SKScene {          //Level Selectionmode
     
     
@@ -70,7 +71,7 @@ class GameModeScene: SKScene {          //Level Selectionmode
         let back = SKLabelNode(fontNamed: "The Bold Font")
         back.text = "back to menue"
         back.name = "menueButton"
-        back.fontSize  = 50
+        back.fontSize  = 60
         back.fontColor = SKColor.white
         back.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.1)
         back.zPosition = 1
@@ -99,9 +100,9 @@ class GameModeScene: SKScene {          //Level Selectionmode
                 classic.run(scaleDown)
                 
                 
-                let sceneToMoveTo = GameScene(size: self.size)
+                let sceneToMoveTo = InstructionScene(size: self.size)
                 sceneToMoveTo.scaleMode = self.scaleMode
-                let myTransition = SKTransition.fade(withDuration: 0.5)
+                let myTransition = SKTransition.push(with: .left, duration: 0.38)
                 self.view!.presentScene(sceneToMoveTo, transition: myTransition)
                 
                 classic.run(scaleBack)
@@ -117,9 +118,9 @@ class GameModeScene: SKScene {          //Level Selectionmode
                 let scaleBack = SKAction.scale(to: 1, duration: 0.1)
                 timeMode.run(scaleDown)
                 
-                let sceneToMoveTo = BetaScene(size: self.size)
+                let sceneToMoveTo = InstructionScene(size: self.size)
                 sceneToMoveTo.scaleMode = self.scaleMode
-                let myTransition = SKTransition.fade(withDuration: 0.5)
+                let myTransition = SKTransition.push(with: .left, duration: 0.38)
                 self.view!.presentScene(sceneToMoveTo, transition: myTransition)
                 
                 timeMode.run(scaleBack)
@@ -155,7 +156,7 @@ class GameModeScene: SKScene {          //Level Selectionmode
                     
                     let sceneToMoveTo = BetaScene(size: self.size)
                     sceneToMoveTo.scaleMode = self.scaleMode
-                    let myTransition = SKTransition.fade(withDuration: 0.5)
+                    let myTransition = SKTransition.push(with: .left, duration: 0.38)
                     self.view!.presentScene(sceneToMoveTo, transition: myTransition)
                     
                 }}

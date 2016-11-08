@@ -1,15 +1,15 @@
 //
-//  BetaScene.swift
+//  InstructionScene.swift
 //  SpaceMissionReloaded
 //
-//  Created by Yannick Klose on 07.10.16.
+//  Created by Yannick Klose on 04.11.16.
 //  Copyright © 2016 Yannick Klose. All rights reserved.
 //
 
 import Foundation
 import SpriteKit
 
-class BetaScene: SKScene {
+class InstructionScene: SKScene {
     
     override func didMove(to view: SKView) {
         
@@ -18,30 +18,41 @@ class BetaScene: SKScene {
         background.zPosition = 0
         self.addChild(background)
         
+        var instructions = ""
         
-        let betaWarning = SKLabelNode(fontNamed: "The Bold Font")
-        betaWarning.text = "This Gamemode"
-        betaWarning.fontSize = 120
-        betaWarning.fontColor = SKColor.red
-        betaWarning.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.78)
-        betaWarning.zPosition = 1
-        self.addChild(betaWarning)
+        if gameModeChoice == 1 {
+        instructions = "-- Classic Mode --  \n\n\ninstruction text\nis missing\n\n\n\n"
+        }
+        if gameModeChoice == 2 {
+            instructions = "-- Time Mode -- \n\n\ninstruction text\nis missing\n\n\n\n"
+        }
         
-        let betaWarning0 = SKLabelNode(fontNamed: "The Bold Font")
-        betaWarning0.text = "is in progress!"
-        betaWarning0.fontSize = 120
-        betaWarning0.fontColor = SKColor.red
-        betaWarning0.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.7)
-        betaWarning0.zPosition = 1
-        self.addChild(betaWarning0)
+        let instructionMessage = SKLabelNode(fontNamed: "The Bold Font")
+        instructionMessage.fontSize = 70
+        //instructionMessage.horizontalAlignmentMode = .left
+        instructionMessage.verticalAlignmentMode = .top
+        instructionMessage.fontColor = UIColor.white
+        instructionMessage.text = instructions
+        let message = instructionMessage.multilined()
+        message.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.65)
+        message.zPosition = 1001
+        self.addChild(message)
         
         
         let betaWarning1 = SKLabelNode(fontNamed: "The Bold Font")
-        betaWarning1.text = "Continue"
+        betaWarning1.text = "Let's Go!"
         betaWarning1.name = "continueButton"
         betaWarning1.fontSize = 140
-        betaWarning1.fontColor = SKColor.white
-        betaWarning1.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.4)
+        if gameModeChoice == 1{
+            betaWarning1.fontColor = SKColor.cyan
+        }
+        if gameModeChoice == 2{
+            betaWarning1.fontColor = SKColor.yellow
+        }
+        if gameModeChoice == 3{
+            betaWarning1.fontColor = SKColor.red
+        }
+        betaWarning1.position = CGPoint(x: self.size.width*0.5, y: self.size.height*0.26)
         betaWarning1.zPosition = 1
         self.addChild(betaWarning1)
         
@@ -92,4 +103,3 @@ class BetaScene: SKScene {
     
     
 }
-
