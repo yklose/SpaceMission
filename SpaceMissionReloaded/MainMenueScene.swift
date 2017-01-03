@@ -34,6 +34,7 @@ class MainMenueScene: SKScene{                          //StartScreen
     
     override func didMove(to view: SKView) {
         
+        
         //----------- scrolling Background --START
         
         let backgroundBlack = SKSpriteNode(imageNamed: "black")
@@ -231,7 +232,7 @@ class MainMenueScene: SKScene{                          //StartScreen
             lastUpdateTime = currentTime
         }
         
-        let amountToMoveBackground = (amountToMovePerSecound )*CGFloat(deltaFrameTime) //adjust the speed of the scolling background [+ (vmaxEnemy*5 - 2.6*5)]
+        let amountToMoveBackground = (amountToMovePerSecound)*CGFloat(deltaFrameTime) //adjust the speed of the scolling background [+ (vmaxEnemy*5 - 2.6*5)]
         
         
         

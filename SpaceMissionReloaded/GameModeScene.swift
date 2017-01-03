@@ -30,7 +30,7 @@ class GameModeScene: SKScene {          //Level Selectionmode
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
         background.zPosition = 0
-        self.addChild(background)
+        self.addChild(background) 
         
         let selection = SKLabelNode(fontNamed: "The Bold Font")
         selection.text = "Select a game mode"
