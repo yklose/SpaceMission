@@ -23,7 +23,7 @@ You can choose between 3 different game modes:
     
 ## Controls ##
 
-There are two ways to control the player.
+There are two ways to control the player:
 * Touch and Drag your finger to control the spaceship
 * Use the accelerationmeter on your iOS Device (tend it to the right or left)
 
