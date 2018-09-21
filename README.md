@@ -19,7 +19,7 @@ You can choose between 3 different game modes:
 ### Single Shot ###
     As you might expect in this gamemode you have only 1 shot. If you
     hit an enemy you get another bullet.
-    THIS GAMEMODE IS NOT FINISHED...
+    THIS GAMEMODE IS NOT FINISHED... Coming soon
     
 ## Controls ##
 
